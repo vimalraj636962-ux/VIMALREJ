@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vimalraj R | Portfolio</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+      color: #eee;
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Overlay to darken background for text readability */
+    body::before {}
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,30,0.65);
+      z-index: 0;
+    }
+
+    /* Content container */
+    main 
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: auto;
+      padding: 40px 20px;
+      text-align: center;
+      text-shadow:
+        0 0 8px #7ab7f5,
+        0 0 20px #0a64e8;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 0.1em;
+      color: #a8d0ff;
+      text-shadow:
+        0 0 15px #a8d0ff,
+        0 0 30px #0a64e8;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5em;
+      color: #d0e6ff;
+      text-shadow:
+        0 0 6px #d0e6ff,
+        0 0 12px #4499ff;
+    }
+
+    p, li {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 0.6em;
+      color: #cddbf7;
+      text-shadow: 0 0 6px #0a64e8;
+    }
+
+    ul {
+      list-style: none;
+      margin-bottom: 1.5em;
+      padding-left: 0;
+    }
+
+    li {
+      padding: 5px 0;
+      border-bottom: 1px dotted rgba(255 255 255 / 0.3);
+    }
+
+    .section {
+      margin-bottom: 50px;
+      background: rgba(5,10,35,0.5);
+      border-radius: 10px;
+      padding: 30px 25px;
+      box-shadow: 0 0 30px #0a64e8aa;
+    }
+
+    .project-card {
+      background: rgba(255 255 255 / 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #4b88ff66;
+      margin-top: 20px;
+    }
+
+    /* Contact Form */
+    form input, form textarea, form button {
+    width: 100%;
+      max-width: 400px;
+      padding: 12px 15px;
+      margin: 12px auto;
+      display: block;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    form input, form textarea {
+      background: rgba(255 255 255 / 0.15);
+      color: #d0e6ff;
+      box-shadow: 0 0 10px #3378ff66 inset;
+    }
+
+    form input::placeholder,
+    form textarea::placeholder {
+      color: #c0d8ffcc;
+    }
+
+    form button {
+      background-color: #0a64e8;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 20px #0a64e8;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #0661ca;
+      box-shadow: 0 0 30px #0a64e8ff;
+    }
+
+    #status {
+      font-weight: 600;
+      color: #ffee00;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #666;
+      background: rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 10;
+      margin-top: 60px;
+    }
+
+    /* 🌕 Moon */
+    .moon {
+      position: fixed;
+      top: 60px;
+      right: 70px;
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle at 40% 40%, #fffde7, #bfc8c7 60%, #51595a 90%);
+      border-radius: 50%;
+      box-shadow: 0 0 60px 18px rgba(255,255,220,0.5);
+      animation: moonGlow 3s ease-in-out infinite alternate;
+      z-index: 5;
+    }
+
+    @keyframes moonGlow {
+      0% {
+        box-shadow: 0 0 60px 18px rgba(255,255,220,0.5);
+      }
+      100% {
+        box-shadow: 0 0 90px 28px rgba(255,255,220,0.85);
+      }
+    }
+
+    /* ☁️ Clouds */
+    .cloud {
+      position: fixed;
+      width: 220px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      opacity: 0.15;
+      animation: floatClouds 70s linear infinite;
+      box-shadow:
+        60px 20px 0 0 rgba(255, 255, 255, 0.18),
+        120px 0 0 0 rgba(255, 255, 255, 0.22),
+        180px 25px 0 0 rgba(255, 255, 255, 0.18);
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+      z-index: 3;
+    }
+    .cloud1 { top: 110px; left: -280px; animation-delay: 0s;}
+    .cloud2 { top: 220px; left: -450px; animation-delay: 20s;}
+    .cloud3 { top: 320px; left: -600px; animation-delay: 40s;}
+
+    @keyframes floatClouds {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(120vw); }
+    }
+
+    /* 🌠 Shooting stars */
+    .shooting-stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .shooting-stars div {
+      position: absolute;
+      top: -80px;
+      width: 3px;
+      height: 110px;
+      background: linear-gradient(white, transparent);
+      opacity: 0;
+      border-radius: 2px;
+      filter: drop-shadow(0 0 10px white);
+      animation: shootingStarAnim 5s linear infinite;
+    }
+
+    /* Different left positions and delays */
+    .shooting-stars div:nth-child(1) { left: 10%; animation-delay: 1s;}
+    .shooting-stars div:nth-child(2) { left: 25%; animation-delay: 2.8s;}
+    .shooting-stars div:nth-child(3) { left: 40%; animation-delay: 4.5s;}
+    .shooting-stars div:nth-child(4) { left: 60%; animation-delay: 6.1s;}
+    .shooting-stars div:nth-child(5) { left: 80%; animation-delay: 7.8s;}
+    .shooting-stars div:nth-child(6) { left: 90%; animation-delay: 9.2s;}
+
+    @keyframes shootingStarAnim {
+      0% {
+        transform: translateY(0) rotate(45deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(900px) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    /* Software Skills Icons */
+    .skill-icons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .skill-icons a {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      transition: transform 0.3s ease;
+    }
+
+    .skill-icons a:hover {
+      transform: scale(1.2);
+    }
+
+    .skill-icons img {
+      max-width: 100%;
+      max-height: 100%;
+      filter: drop-shadow(0 0 6px #0a64e8);
+    }
+
+    /* Responsive text scaling */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.4rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      main {
+        padding: 25px 15px;
+      }
+      .skill-icons a {
+        width: 60px;
+        height: 60px;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Effects -->
+  <div class="moon"></div>
+  <div class="shooting-stars">
+    <div></div><div></div><div></div><div></div><div></div><div></div>
+  </div>
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="cloud cloud3"></div>
+
+  <!-- Content -->
+  <main>
+    <header>
+      <h1>Vimalraj R</h1>
+      <p>B.Tech Information Technology</p>
+    </header>
+
+    <section class="section about">
+      <h2>About Me</h2>
+      <p>I am passionate about technology and building innovative solutions. I specialize in AI prompting, application development, and creating assistive technologies that make a difference in people’s lives.</p>
+      <p>My goal is to contribute to meaningful tech that empowers individuals, especially those with unique needs, such as the visually impaired.</p>
+    </section>
+
+    <section class="section software-skills">
+      <h2>Software Skills</h2>
+      <div class="skill-icons">
+        <a href="https://isocpp.org/" target="_blank" rel="noopener" title="C++">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++ Logo" />
+        </a>
+        <a href="https://www.oracle.com/java/" target="_blank" rel="noopener" title="Java">
+          <img src="https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg" alt="Java Logo" />
+        </a>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noopener" title="HTML">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" alt="HTML5 Logo" />
+        </a>
+        <a href="https://www.python.org/" target="_blank" rel="noopener" title="Python">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python Logo" />
+        </a>
+        <a href="https://openai.com/blog/chatgpt" target="_blank" rel="noopener" title="AI Prompt Engineering">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg" alt="OpenAI Logo" />
+        </a>
+      </div>
+    </section>
+
+    <section class="section professional-skills">
+      <h2>Professional Skills</h2>
+      <ul>
+        <li>Team Work</li>
+        <li>Communication</li>
+        <li>Leadership</li>
+        <li>Time Management</li>
+      </ul>
+    </section>
+
+    <section class="section projects">
+      <h2>Projects</h2>
+      <div class="project-card">
+        <h3>Assistive Software for the Visually Impaired</h3>
+        <p>Developed an AI-based communication assistant that allows blind individuals to interact with digital content using speech recognition and audio feedback. Designed with accessibility and usability as top priorities.</p>
+      </div>
+    </section>
+
+    <section class="section contact">
+      <h2>Contact Me</h2>
+      <form id="contactForm">
+        <input type="text" placeholder="Your Name" required />
+        <input type="email" id="email" placeholder="Your Email" required />
+        <textarea rows="4" placeholder="Your Message" required></
+
+          
+
